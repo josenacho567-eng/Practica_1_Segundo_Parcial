@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -51,21 +51,21 @@ import com.example.practica_1_segundo_parcial.ui.theme.Practica_1_Segundo_Parcia
 @Composable
 fun MonsterListScreen(
     onMonsterClick: (Int) -> Unit,
-    onVerFavoritos: () -> Unit,
-    viewModel: MonsterListViewModel = viewModel()
+    modifier: Modifier = Modifier,
+    viewModel: MonsterListViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Bestiario MHW") },
+                windowInsets = WindowInsets(0, 0, 0, 0),
                 actions = {
                     IconButton(onClick = viewModel::recargar) {
                         Icon(Icons.Default.Refresh, contentDescription = "Actualizar")
-                    }
-                    IconButton(onClick = onVerFavoritos) {
-                        Icon(Icons.Default.Favorite, contentDescription = "Ver favoritos")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -79,7 +79,6 @@ fun MonsterListScreen(
         MonsterListContent(
             uiState = uiState,
             onMonsterClick = onMonsterClick,
-            onFavoritoClick = viewModel::alternarFavorito,
             onCargarMas = viewModel::cargarMas,
             onReintentar = viewModel::recargar,
             onBusquedaChange = viewModel::actualizarBusqueda,
@@ -93,7 +92,6 @@ fun MonsterListScreen(
 fun MonsterListContent(
     uiState: MonsterListUiState,
     onMonsterClick: (Int) -> Unit,
-    onFavoritoClick: (MonsterItem) -> Unit,
     onCargarMas: () -> Unit,
     onReintentar: () -> Unit,
     onBusquedaChange: (String) -> Unit,
@@ -108,7 +106,7 @@ fun MonsterListContent(
                 CircularProgressIndicator()
             }
         }
-        uiState.monstruos.isEmpty() && error != null -> {
+        (uiState.monstruos.isEmpty() && error != null) -> {
             MensajeDeError(
                 mensaje = error,
                 onReintentar = onReintentar,
@@ -175,9 +173,7 @@ fun MonsterListContent(
                         items(uiState.monstruos, key = { it.id }) { monstruo ->
                             MonsterCard(
                                 monstruo = monstruo,
-                                esFavorito = monstruo.id in uiState.favoritosIds,
-                                onClick = { onMonsterClick(monstruo.id) },
-                                onFavoritoClick = { onFavoritoClick(monstruo) }
+                                onClick = { onMonsterClick(monstruo.id) }
                             )
                         }
 
@@ -276,11 +272,9 @@ private fun MonsterListContentPreview() {
                         weaknesses = listOf(Weaknesse(null, "thunder", 3))
                     )
                 ),
-                totalFiltrados = 4,
-                favoritosIds = setOf(25, 45)
+                totalFiltrados = 4
             ),
             onMonsterClick = {},
-            onFavoritoClick = {},
             onCargarMas = {},
             onReintentar = {},
             onBusquedaChange = {},

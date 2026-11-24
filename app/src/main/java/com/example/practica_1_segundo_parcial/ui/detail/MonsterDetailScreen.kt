@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,8 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.Shield
@@ -76,44 +75,37 @@ private const val MAX_ESTRELLAS = 3f
 @Composable
 fun MonsterDetailScreen(
     onVolver: () -> Unit,
-    viewModel: MonsterDetailViewModel = viewModel()
+    modifier: Modifier = Modifier,
+    viewModel: MonsterDetailViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val detalle = uiState.detalle
     val error = uiState.error
 
     Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text(detalle?.name ?: "Detalle") },
+                windowInsets = WindowInsets(0, 0, 0, 0),
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 },
-                actions = {
-                    if (detalle != null) {
-                        IconButton(onClick = viewModel::alternarFavorito) {
-                            Icon(
-                                imageVector = if (uiState.esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = if (uiState.esFavorito) "Quitar de favoritos" else "Agregar a favoritos"
-                            )
-                        }
-                    }
-                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
     ) { paddingInterno ->
-        val modifier = Modifier.padding(paddingInterno)
+        val contentModifier = Modifier.padding(paddingInterno)
         when {
             uiState.cargando -> {
-                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(modifier = contentModifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
@@ -121,10 +113,10 @@ fun MonsterDetailScreen(
                 MensajeDeError(
                     mensaje = error,
                     onReintentar = viewModel::cargar,
-                    modifier = modifier.fillMaxSize()
+                    modifier = contentModifier.fillMaxSize()
                 )
             }
-            detalle != null -> MonsterDetailContent(detalle = detalle, modifier = modifier)
+            detalle != null -> MonsterDetailContent(detalle = detalle, modifier = contentModifier)
             else -> Unit
         }
     }
