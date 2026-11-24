@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.practica_1_segundo_parcial.ui.disney.DisneyScreen
 import com.example.practica_1_segundo_parcial.ui.simpsons.SimpsonsScreen
+import com.example.practica_1_segundo_parcial.ui.navigation.AppNavigation
 import com.example.practica_1_segundo_parcial.ui.theme.Practica_1_Segundo_ParcialTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
                         PrimaryTabRow(selectedTabIndex = selectedTab) {
-                            listOf("Disney", "Los Simpson").forEachIndexed { index, title ->
+                            listOf("Disney", "Los Simpson", "Monster Hunter").forEachIndexed { index, title ->
                                 Tab(
                                     selected = selectedTab == index,
                                     onClick = { selectedTab = index },
@@ -41,7 +42,11 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         screenState.SaveableStateProvider(selectedTab) {
-                            if (selectedTab == 0) DisneyScreen() else SimpsonsScreen()
+                            when (selectedTab) {
+                                0 -> DisneyScreen()
+                                1 -> SimpsonsScreen()
+                                else -> AppNavigation()
+                            }
                         }
                     }
                 }
