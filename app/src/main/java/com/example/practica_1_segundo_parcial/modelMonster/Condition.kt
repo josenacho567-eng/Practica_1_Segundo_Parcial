@@ -4,6 +4,6 @@ data class Condition(
     val chance: Int,
     val quantity: Int,
     val rank: String,
-    val subtype: String,
+    val subtype: String? = null,
     val type: String
 )

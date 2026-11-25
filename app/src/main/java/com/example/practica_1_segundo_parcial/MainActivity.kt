@@ -4,13 +4,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.practica_1_segundo_parcial.feature.trivia.presentation.TriviaScreen
+import com.example.practica_1_segundo_parcial.ui.disney.DisneyScreen
+import com.example.practica_1_segundo_parcial.ui.simpsons.SimpsonsScreen
+import com.example.practica_1_segundo_parcial.ui.navigation.AppNavigation
 import com.example.practica_1_segundo_parcial.ui.theme.Practica_1_Segundo_ParcialTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +29,30 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Practica_1_Segundo_ParcialTheme {
+                var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+                val screenState = rememberSaveableStateHolder()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Column(Modifier.padding(innerPadding)) {
+                        PrimaryTabRow(selectedTabIndex = selectedTab) {
+                            listOf("Disney", "Los Simpson", "Monster Hunter", "Trivia").forEachIndexed { index, title ->
+                                Tab(
+                                    selected = selectedTab == index,
+                                    onClick = { selectedTab = index },
+                                    text = { Text(title) }
+                                )
+                            }
+                        }
+                        screenState.SaveableStateProvider(selectedTab) {
+                            when (selectedTab) {
+                                0 -> DisneyScreen()
+                                1 -> SimpsonsScreen()
+                                2 -> AppNavigation()
+                                else -> TriviaScreen()
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Practica_1_Segundo_ParcialTheme {
-        Greeting("Android")
     }
 }
