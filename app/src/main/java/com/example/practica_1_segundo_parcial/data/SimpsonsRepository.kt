@@ -8,12 +8,7 @@ class SimpsonsRepository(private val api: SimpsonsApiService) {
 
     companion object {
         val instance by lazy {
-            SimpsonsRepository(
-                RetrofitClient.service(
-                    "https://thesimpsonsapi.com/api/",
-                    SimpsonsApiService::class.java
-                )
-            )
+            SimpsonsRepository(RetrofitClient.simpsonsApi)
         }
     }
 }

@@ -8,7 +8,7 @@ class DisneyRepository(private val api: DisneyApiService) {
 
     companion object {
         val instance by lazy {
-            DisneyRepository(RetrofitClient.service("https://api.disneyapi.dev/", DisneyApiService::class.java))
+            DisneyRepository(RetrofitClient.disneyApi)
         }
     }
 }
