@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.practica_1_segundo_parcial.feature.trivia.presentation.TriviaScreen
 import com.example.practica_1_segundo_parcial.ui.disney.DisneyScreen
 import com.example.practica_1_segundo_parcial.ui.simpsons.SimpsonsScreen
 import com.example.practica_1_segundo_parcial.ui.navigation.AppNavigation
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
                         PrimaryTabRow(selectedTabIndex = selectedTab) {
-                            listOf("Disney", "Los Simpson", "Monster Hunter").forEachIndexed { index, title ->
+                            listOf("Disney", "Los Simpson", "Monster Hunter", "Trivia").forEachIndexed { index, title ->
                                 Tab(
                                     selected = selectedTab == index,
                                     onClick = { selectedTab = index },
@@ -45,7 +46,8 @@ class MainActivity : ComponentActivity() {
                             when (selectedTab) {
                                 0 -> DisneyScreen()
                                 1 -> SimpsonsScreen()
-                                else -> AppNavigation()
+                                2 -> AppNavigation()
+                                else -> TriviaScreen()
                             }
                         }
                     }
