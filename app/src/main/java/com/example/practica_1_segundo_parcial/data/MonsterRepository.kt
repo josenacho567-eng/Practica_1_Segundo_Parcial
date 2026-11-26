@@ -1,5 +1,6 @@
 package com.example.practica_1_segundo_parcial.data
 
+import com.example.practica_1_segundo_parcial.data.mapper.toDomain
 import com.example.practica_1_segundo_parcial.data.remote.MonsterApiService
 import com.example.practica_1_segundo_parcial.data.remote.RetrofitClient
 import com.example.practica_1_segundo_parcial.modelMonster.MonsterItem
@@ -10,7 +11,7 @@ import retrofit2.HttpException
 
 /**
  * Capa de datos (Modelo en MVVM) para los monstruos de Monster Hunter World.
- * Consume unicamente la API remota mediante Retrofit.
+ * Consume la API remota mediante DTOs y los transforma al modelo de dominio con mapeadores.
  */
 class MonsterRepository(
     private val api: MonsterApiService = RetrofitClient.monsterApi
@@ -18,12 +19,14 @@ class MonsterRepository(
 
     /** Descarga la lista de monstruos desde https://mhw-db.com/monsters. */
     suspend fun obtenerMonstruos(): Resultado<List<MonsterItem>> = llamarApi {
-        api.obtenerMonstruos().sortedBy { it.id }
+        api.obtenerMonstruos()
+            .map { it.toDomain() }
+            .sortedBy { it.id }
     }
 
     /** Descarga el detalle de un monstruo desde https://mhw-db.com/monsters/{id}. */
     suspend fun obtenerMonstruo(id: Int): Resultado<MonsterItem> = llamarApi {
-        api.obtenerMonstruo(id)
+        api.obtenerMonstruo(id).toDomain()
     }
 
     private suspend fun <T> llamarApi(llamada: suspend () -> T): Resultado<T> =

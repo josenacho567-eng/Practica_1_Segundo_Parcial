@@ -196,7 +196,7 @@ fun SimpsonsScreen(
                                         Text("Ocupación: ${character.occupation ?: "Desconocida"}")
                                         Text("Estado: ${character.status ?: "Desconocido"}")
                                     }
-                                    character.phrases?.takeIf { it.isNotEmpty() }?.let { phrases ->
+                                    character.phrases.takeIf { it.isNotEmpty() }?.let { phrases ->
                                         item {
                                             Spacer(modifier = Modifier.height(4.dp))
                                             Text(
@@ -236,7 +236,7 @@ private val sampleSimpsonsCharacters = listOf(
         gender = "Male",
         occupation = "Safety Inspector",
         phrases = listOf("Doh!", "Why you little...!"),
-        portrait_path = "/character/1.webp",
+        imageUrl = "https://cdn.thesimpsonsapi.com/500/character/1.webp",
         status = "Alive"
     ),
     personajeDeLosSimpsons(
@@ -247,7 +247,7 @@ private val sampleSimpsonsCharacters = listOf(
         gender = "Female",
         occupation = "Unemployed",
         phrases = listOf("Hrmmm...", "Oh, Homie!"),
-        portrait_path = "/character/2.webp",
+        imageUrl = "https://cdn.thesimpsonsapi.com/500/character/2.webp",
         status = "Alive"
     )
 )
